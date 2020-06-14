@@ -1,0 +1,80 @@
+
+{% extends 'blog/base.html'%}
+{% load static%}
+   {% block content%}
+   <br> <br> 
+    <div class="container mt-4">
+    
+      <div class="row">
+   
+        <!-- Latest Posts -->
+        <main class="posts-listing col-lg-8 "> 
+          <div class="container">
+            <div class="row">
+            
+              <!-- post -->
+              {% for post in queryset%}
+              <div class="post col-xl-6">
+                <div class="d-flex align-items-center">
+                  <div class="avatar"><img src="{{post.author.profile_pic.url}}" alt="..." class="img-fluid"></div><a><div class="title"><span>{{post.author}}</span></div></a>
+                  <div class="date"><i class="icon-clock"></i>{{post.timestamp|timesince}} Ago</div>
+                </div>
+                
+                <div class="post-details">
+                  <div class="post-meta d-flex justify-content-between">
+                     <div class="category">
+                    {% for cat in post.categories.all%}
+                   <a href="#">{{cat}}</a>
+                    {% endfor%}
+                    </div>
+                  </div><a href="{% url 'post-detail' post.id%}">
+                    <h3 class="h4">{{post.title}}</h3></a>
+                  <p class="text-muted">{{post.overview|safe|truncatechars:200}}</p>
+                  <footer class="post-footer d-flex "><a href="#" class="author d-flex align-items-center flex-wrap"></a>
+                    <div class="comments meta-last mt-1"><i class="icon-comment"></i>{{post.comment_count}}</div>
+                    
+                     <div class="comments meta-last mt-1"><i class="far fa-thumbs-up"></i>{{post.comment_count}}</div>
+                      <div class="comments meta-last mt-1"><i class="far fa-eye"></i>{{post.comment_count}}</div>
+                     <br>
+                     <div class="container">
+                        <button class="btn btn-light btn-sm data-toggle="button" aria-pressed="false" autocomplete="off""><i class="far fa-thumbs-up mr-2"></i>Like..</button>
+                        <a href="{% url 'post-detail' post.id %}"><button class="btn btn-light btn-sm"><i class="fas fa-eye mr-2"></i>View</button></a>
+                     
+                    </div>
+                  </footer>
+                </div>
+              </div>
+
+            {% endfor%}
+            </div>
+      
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example">
+              <ul class="pagination pagination-template d-flex justify-content-center">
+                {%if queryset.has_previous%}
+                <li class="page-item"><a href="?{{page_req_var}}={{queryset.previous_page_number}}" class="page-link"> <i class="fa fa-angle-left"></i></a></li>
+
+                {%endif%}
+                {% for num in queryset.paginator.page_range%}
+                {% if queryset.number == num%}
+                <li class="page-item"><a href="?{{page_req_var}}={{num}}" class="page-link">{{num}}</a></li>
+                 {%elif num > queryset.number|add:'-3' and num < queryset.number|add:'3'%}
+                <li class="page-item"><a href="?{{page_req_var}}={{num}}" class="page-link">{{num}}</a></li>
+
+                {% endif%}
+
+                {% endfor%}
+               {% if queryset.has_next%}
+                <li class="page-item"><a href="?{{page_req_var}}={{queryset.next_page_number}}" class="page-link"> <i class="fa fa-angle-right"></i></a></li>
+                {%endif%}
+              </ul>
+            </nav>
+          </div>
+        </main>
+        {% include 'blog/aside.html'%}
+   
+      </div>
+    </div>
+
+  {% endblock content%}
