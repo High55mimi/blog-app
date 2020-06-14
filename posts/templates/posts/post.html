@@ -1,0 +1,120 @@
+{% extends 'blog/base.html'%}
+{% load static%}
+{% block content%}
+<br><br><br>
+    <div class="container">
+      <div class="row">
+        <!-- Latest Posts -->
+        <main class="post blog-post col-lg-8"> 
+          <div class="container">
+            <div class="post-single">
+              <div class="post-thumbnail"><img src="{{post.thumb_nail.url}}" alt="..." class="img-fluid"></div>
+              <div class="post-details">
+                <div class="post-meta d-flex justify-content-between">
+                
+                </div>
+                <h1>{{post.title}}<a href="#"><i class="fa fa-bookmark-o"></i></a></h1>
+                 <div class="post-footer d-flex align-items-center flex-column flex-sm-row"><a href="#" class="author d-flex align-items-center flex-wrap">
+                    <div class="avatar"><img src="{{post.author.profile_pic.url}}" alt="..." class="img-fluid"></div>
+                    <div class="title"><span>{{post.author}}</span></div></a>
+                  <div class="d-flex align-items-center flex-wrap">       
+                    <div class="date"><i class="icon-clock"></i>{{post.timestamp|timesince}}Ago</div>
+                    <div class="views"><i class="icon-eye"></i> ({{post.viewcount}})</div>
+                    <div class="comments meta-last"><i class="icon-comment"></i>({{post.comments.count}})</div>
+                  </div>
+                </div>
+                <div class="post-body">
+                  <p class="lead">{{post.overview|safe}}</p>
+                  
+
+                </div>
+                <div class="post-tags">
+                  {% for cat in post.categories.all%}
+                  <a href="#" class="tag">#{{cat}}</a>
+                  {%endfor%}
+                  </div>
+                <div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row">
+                  {%if post.get_previous_by_timestamp %}
+                  <a href="{% url 'post-detail' post.get_previous_by_timestamp.id %}" class="prev-post text-left d-flex align-items-center">
+                
+                    <div class="icon prev"><i class="far fa-hand-point-left"></i></div>
+                    <div class="text"><strong class="text-default">Previous Post </strong>
+                      <h4 class="text-default"><strong>{{post.get_previous_by_timestamp.title}}</strong></h4>
+                    </div>
+                  </a>
+
+                    {%endif%}
+                    
+                    {% if post.get_next_by_timestamp%}
+                    <a href="{% url 'post-detail' post.get_next_by_timestamp.id %}" class="next-post text-right d-flex align-items-center justify-content-end">
+                    <div class="text"><strong class="text-default">Next Post </strong>
+                      <h4 class="text-default"><strong>{{post.get_next_by_timestamp.title}}</strong></h4>
+                    </div>
+                    <div class="icon next"><i class="far fa-hand-point-right"></i>   </i></div>
+                  </a>
+                  {%endif%}
+              
+                  </div>
+                <div class="post-comments">
+                  <header>
+                    <h3 class="h6"><i class="far fa-comments"></i>Comments<span class="no-of-comments">({{post.comments.count}})</span></h3>
+                  </header>
+                    {% for comment in post.get_comments%}
+                  <div class="comment">
+                    <div class="comment-header d-flex justify-content-between">
+                      <div class="user d-flex align-items-center">
+                        
+                        <div class="image">
+                          {% if comment.user.post_author%}
+                          <img src="{{comment.user.post_author.profile_pic.url}}" alt="..." class="img-fluid rounded-circle">
+                          {% else %}
+                          <img src="{% static 'img/user.svg' %}" alt="..." class="img-fluid rounded-circle">
+                          {%endif%}
+
+                        </div>
+                        <div class="title"><strong>{{comment.user.username}}</strong>
+                          <span class="date">{{comment.timestamp|timesince}} Ago</span></div>
+                      </div>
+                    </div>
+                    <div class="comment-body">
+                      <p>{{comment.content}}</p>
+                      <h6 class="mt-1">Reply....{{comment.user.username}}</h6>
+                    </div>
+                    
+                    
+                  </div>
+                  {%endfor%}
+                </div>
+                {% if request.user.is_authenticated%}
+                <div class="add-comment">
+                  <header>
+                    <h3 class="h6">Leave a reply</h3>
+                  </header>
+                  <form action="#" class="commenting-form" method="POST">
+                    {%csrf_token%}
+                    <div class="row">
+                      <div class="form-group col-md-12">
+                        {{form}}
+                      </div>
+                      <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-default"><i class="far fa-comment"></i>Comment</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                {%else%}
+                    
+                <div class="h6">
+                 <a href="{% url 'login-page' %}"><button class="btn btn-info btn-sm tag">Login</button> </a> to Post A Comment
+                
+              </div>
+                {% endif%}
+              </div>
+            </div>
+          </div>
+        </main>
+       {% include 'blog/aside.html'%}
+      </div>
+    </div>
+    <!-- Page Footer-->
+{% endblock content%}

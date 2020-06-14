@@ -1,0 +1,25 @@
+{% extends 'blog/base.html'%}
+{% load static%}
+{%load crispy_forms_tags%}
+{% block content%}
+
+<br><br><br><br>
+<div class="container col-md-6 mt-5 border border-light mb-4">
+	<h4><center><strong>Add Post..</strong></center></h4>
+	{{form.media}}
+<form method="POST" action="" enctype="multipart/form-data" >
+	{%csrf_token%}
+	{{form|crispy}}
+
+    <center>
+      <button type="submit" class="btn btn-default">Add Post</button>
+
+  </center>
+ 
+</form>
+
+</div>
+
+
+
+{% endblock content%}
